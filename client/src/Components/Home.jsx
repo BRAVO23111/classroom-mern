@@ -1,16 +1,20 @@
-import React from 'react';
-import { useRecoilState } from 'recoil';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { userState } from '../atoms/atoms';
 
 function HomePage() {
-  const [user, setUser] = useRecoilState(userState);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('authToken'));
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Update authentication status based on localStorage
+    const token = localStorage.getItem('authToken');
+    setIsAuthenticated(!!token);
+  }, []);
+
   const handleLogout = () => {
-    setUser(null); 
-    localStorage.removeItem('authToken'); 
-    navigate('/login'); 
+    localStorage.removeItem('authToken');
+    setIsAuthenticated(false);
+    navigate('/');
   };
 
   return (
@@ -19,15 +23,13 @@ function HomePage() {
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-white text-2xl">School Management System</h1>
           <div>
-            {user ? (
-              <>
-                <button 
-                  className="bg-red-500 text-white px-4 py-2 rounded"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
-              </>
+            {isAuthenticated ? (
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
             ) : (
               <Link to="/login" className="bg-white text-blue-500 px-4 py-2 rounded">
                 Login
@@ -37,7 +39,14 @@ function HomePage() {
         </div>
       </nav>
       <div className="container mx-auto mt-8">
-        <h2 className="text-3xl text-center">Welcome to the School Management System</h2>
+        <h2 className="text-3xl text-center">
+          {isAuthenticated ? 'Welcome back!' : 'Welcome to the School Management System'}
+        </h2>
+        {!isAuthenticated && (
+          <h2 className="text-3xl text-center">
+            Please login to view content
+          </h2>
+        )}
       </div>
     </div>
   );
