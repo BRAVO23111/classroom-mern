@@ -122,45 +122,41 @@ router.get('/all', authMiddleware, authenticateRole('Principal', 'Teacher'), asy
     res.status(500).json({ message: 'Server error.' });
   }
 });
+router.put('/update-teacher/:id', authMiddleware, authenticateRole('Principal'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email } = req.body;
 
-// List students in a classroom (Optional)
-// Uncomment if needed
-// router.get('/classroom/:id/students', async (req, res) => {
-//   try {
-//     const classroom = await ClassroomModel.findById(req.params.id);
-//     if (!classroom) {
-//       return res.status(404).json({ message: 'Classroom not found' });
-//     }
+    const teacher = await UserModel.findOneAndUpdate(
+      { _id: id, role: 'Teacher' },
+      { name, email },
+      { new: true }
+    );
 
-//     const students = await UserModel.find({
-//       _id: { $in: classroom.students },
-//       role: 'Student'
-//     });
+    if (!teacher) {
+      return res.status(404).json({ message: 'Teacher not found' });
+    }
 
-//     res.json(students);
-//   } catch (error) {
-//     console.error('Error fetching students:', error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// });
+    res.json({ message: 'Teacher updated successfully', teacher });
+  } catch (error) {
+    console.error('Error updating teacher:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+router.delete('/delete-teacher/:id' ,authMiddleware, authenticateRole('Principal'), async (req, res) => {
+  try {
+    const teacher = await UserModel.findByIdAndDelete(req.params.id);
+    if (!teacher) {
+      return res.status(404).json({ message: 'Teacher not found' });
+    }
+    res.json({
+      message : "Deleted"
+    })
+  } catch (error) {
+    console.error('Error deleting teacher:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+} )
 
-// Create timetable for a classroom (Optional)
-// Uncomment if needed
-// router.post('/classroom/:id/timetable', async (req, res) => {
-//   try {
-//     const { days, sessions } = req.body;
-//     const classroom = await ClassroomModel.findById(req.params.id);
-//     if (!classroom) {
-//       return res.status(404).json({ message: 'Classroom not found' });
-//     }
-   
-//     classroom.timetable = { days, sessions };
-//     await classroom.save();
-//     res.json(classroom.timetable);
-//   } catch (error) {
-//     console.error('Error creating timetable:', error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// });
 
 export { router as classroomRouter };

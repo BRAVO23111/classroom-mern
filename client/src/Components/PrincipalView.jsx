@@ -14,6 +14,7 @@ const PrincipalView = () => {
   const [teacherId, setTeacherId] = useState("");
   const [classroomId, setClassroomId] = useState("");
   const [newTeacher, setNewTeacher] = useState({ name: "", email: "", password: "" });
+  const [editingTeacher, setEditingTeacher] = useState(null);
   const user = useRecoilValue(userState);
 
   useEffect(() => {
@@ -105,7 +106,29 @@ const PrincipalView = () => {
       console.error("Error assigning students:", error);
     }
   };
-
+  const handleUpdateTeacher = async (e) => {
+    e.preventDefault();
+    console.log(`${editingTeacher._id}`);
+    try {
+      await axios.put(`http://localhost:3000/classroom/update-teacher/${editingTeacher._id}`, editingTeacher, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
+      });
+      fetchTeachers(); 
+      setEditingTeacher(null); 
+    } catch (error) {
+      console.error("Error updating teacher:", error);
+    }
+  };
+  const handleDeleteTeacher = async (teacherId) => {
+    try {
+      await axios.delete(`http://localhost:3000/classroom/delete-teacher/${teacherId._id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
+      });
+      fetchTeachers(); // Refresh the list of teachers
+    } catch (error) {
+      console.error("Error deleting teacher:", error);
+    }
+  };  
   return (
     <div className="p-6">
       <HomePage />
@@ -118,7 +141,7 @@ const PrincipalView = () => {
             <button onClick={() => setActiveTab("classrooms")} className="p-2">Classrooms</button>
           </li>
           <li className={`mr-1 ${activeTab === "teachers" ? "border-b-2 border-blue-500" : ""}`}>
-            <button onClick={() => setActiveTab("teachers")} className="p-2">Teachers</button>
+            <button onClick={() => setActiveTab("teachers")} className="p-2">Create Teacher</button>
           </li>
           <li className={`mr-1 ${activeTab === "students" ? "border-b-2 border-blue-500" : ""}`}>
             <button onClick={() => setActiveTab("students")} className="p-2">Students</button>
@@ -128,6 +151,9 @@ const PrincipalView = () => {
           </li>
           <li className={`mr-1 ${activeTab === "assignStudents" ? "border-b-2 border-blue-500" : ""}`}>
             <button onClick={() => setActiveTab("assignStudents")} className="p-2">Assign Students</button>
+          </li>
+          <li className={`mr-1 ${activeTab === "editTeachers" ? "border-b-2 border-blue-500" : ""}`}>
+            <button onClick={() => setActiveTab("editTeachers")} className="p-2">Teacher's List</button>
           </li>
         </ul>
       </div>
@@ -477,6 +503,61 @@ const PrincipalView = () => {
           </table>
         </div>
       )}
+      {activeTab === "editTeachers" && (
+  <div className="mb-6">
+    <h2 className="text-2xl mb-2">Edit Teachers</h2>
+    <table className="min-w-full bg-white border border-gray-200 rounded shadow-md">
+      <thead>
+        <tr>
+          <th className="py-2 px-4 border-b">Name</th>
+          <th className="py-2 px-4 border-b">Email</th>
+          <th className="py-2 px-4 border-b">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {teachers.map((teacher) => (
+          <tr key={teacher._id}>
+            <td className="py-2 px-4 border-b">
+              {editingTeacher && editingTeacher._id === teacher._id ? (
+                <input
+                  type="text"
+                  value={editingTeacher.name}
+                  onChange={(e) => setEditingTeacher({ ...editingTeacher, name: e.target.value })}
+                  className="border p-2 w-full"
+                />
+              ) : (
+                teacher.name
+              )}
+            </td>
+            <td className="py-2 px-4 border-b">
+              {editingTeacher && editingTeacher._id === teacher._id ? (
+                <input
+                  type="email"
+                  value={editingTeacher.email}
+                  onChange={(e) => setEditingTeacher({ ...editingTeacher, email: e.target.value })}
+                  className="border p-2 w-full"
+                />
+              ) : (
+                teacher.email
+              )}
+            </td>
+            <td className="py-2 px-4 border-b">
+              {editingTeacher && editingTeacher._id === teacher._id ? (
+                <button onClick={handleUpdateTeacher} className="bg-blue-500 text-white p-1 rounded">Save</button>
+              ) : (
+                <>
+                  <button onClick={() => setEditingTeacher(teacher)} className="bg-yellow-500 text-white p-1 rounded mr-2">Edit</button>
+                  <button onClick={() => handleDeleteTeacher(teacher)} className="bg-red-500 text-white p-1 rounded">Delete</button>
+                </>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
+
     </div>
   );
 };
