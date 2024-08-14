@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { userState } from '../atoms/atoms';
 
@@ -42,7 +42,7 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <form className="bg-white p-6 rounded shadow-md w-full max-w-sm" onSubmit={handleLogin}>
         <h2 className="text-2xl mb-4">Login</h2>
        
@@ -69,9 +69,15 @@ function Login() {
           <option value="teacher">Teacher</option>
           <option value="principal">Principal</option>
         </select>
-        <button className="bg-blue-500 text-white p-2 w-full rounded" type="submit">
+        <button className="bg-blue-500 text-white p-2 w-full rounded mb-4" type="submit">
           Login
         </button>
+        <p className="text-center text-gray-600">
+          Not registered?{' '}
+          <Link to="/register" className="text-blue-500 hover:underline">
+            Register here
+          </Link>
+        </p>
       </form>
     </div>
   );

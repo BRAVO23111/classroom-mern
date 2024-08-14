@@ -5,9 +5,10 @@ import jwt from 'jsonwebtoken';
 import { UserModel } from '../model/User.js';
 const router = express.Router();
 dotenv.config()
+
 router.post('/register', async (req, res) => {
   try {
-    const { name , email, password, role } = req.body;
+    const { name, email, password, role } = req.body;
 
     if (!email || !password || !role || !name) {
       return res.status(400).json({ message: 'All fields are required' });
@@ -17,6 +18,14 @@ router.post('/register', async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: 'Email already exists' });
     }
+
+    if (role === 'Principal') {
+      const existingPrincipal = await UserModel.findOne({ role: 'Principal' });
+      if (existingPrincipal) {
+        return res.status(400).json({ message: 'A principal already exists in the system' });
+      }
+    }
+
     const salt = await bcrypt.genSalt(10);
     if (!salt) {
       return res.status(500).json({ message: 'Error generating salt' });
@@ -27,7 +36,7 @@ router.post('/register', async (req, res) => {
       return res.status(500).json({ message: 'Error hashing password' });
     }
 
-    const newUser = new UserModel({ name , email, password: hashedPassword, role });
+    const newUser = new UserModel({ name, email, password: hashedPassword, role });
     await newUser.save();
     res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
@@ -35,7 +44,6 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
