@@ -16,7 +16,7 @@ function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/auth/register', {
+      const response = await axios.post('https://classroom-mern-5w3y.onrender.com/auth/register', {
         name,
         email,
         password,

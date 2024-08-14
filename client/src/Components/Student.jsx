@@ -13,7 +13,7 @@ const StudentDashboard = () => {
 
   const fetchClassroomDetails = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/student/classroom-all', {
+      const response = await axios.get('https://classroom-mern-5w3y.onrender.com/student/classroom-all', {
         headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
       });
       setClassroom(response.data);
@@ -24,7 +24,7 @@ const StudentDashboard = () => {
 
   const fetchTimetable = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/student/timetable', {
+      const response = await axios.get('https://classroom-mern-5w3y.onrender.com/student/timetable', {
         headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
       });
       setTimetable(response.data);

@@ -13,7 +13,7 @@ const TeacherDashboard = () => {
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/teacher/students', {
+      const response = await axios.get('https://classroom-mern-5w3y.onrender.com/teacher/students', {
         headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
       });
       setStudents(response.data);
@@ -30,7 +30,7 @@ const TeacherDashboard = () => {
   const handleUpdateStudent = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:3000/teacher/student/${editingStudent._id}`, editingStudent, {
+      await axios.put(`https://classroom-mern-5w3y.onrender.com/teacher/student/${editingStudent._id}`, editingStudent, {
         headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
       });
       setEditingStudent(null);
@@ -43,7 +43,7 @@ const TeacherDashboard = () => {
   const handleDeleteStudent = async (id) => {
     if (window.confirm('Are you sure you want to delete this student?')) {
       try {
-        await axios.delete(`http://localhost:3000/teacher/student/${id}`, {
+        await axios.delete(`https://classroom-mern-5w3y.onrender.com/teacher/student/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         });
         fetchStudents();
@@ -56,7 +56,7 @@ const TeacherDashboard = () => {
   const handleCreateTimetable = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3000/teacher/timetable', { timetable }, {
+      await axios.post('https://classroom-mern-5w3y.onrender.com/teacher/timetable', { timetable }, {
         headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
       });
       alert('Timetable created successfully');

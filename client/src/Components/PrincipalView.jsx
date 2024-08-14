@@ -36,7 +36,7 @@ const PrincipalView = () => {
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/auth/users?role=Student", {
+      const response = await axios.get("https://classroom-mern-5w3y.onrender.com/auth/users?role=Student", {
         headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
       });
       setStudents(response.data);
@@ -47,7 +47,7 @@ const PrincipalView = () => {
 
   const fetchClassrooms = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/classroom/all", {
+      const response = await axios.get("https://classroom-mern-5w3y.onrender.com/classroom/all", {
         headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
       });
       setClassrooms(response.data);
@@ -59,7 +59,7 @@ const PrincipalView = () => {
   const handleCreateClassroom = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/classroom/create-classroom", newClassroom, {
+      const response = await axios.post("https://classroom-mern-5w3y.onrender.com/classroom/create-classroom", newClassroom, {
         headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
       });
       setClassrooms([...classrooms, response.data]);
@@ -72,7 +72,7 @@ const PrincipalView = () => {
   const handleCreateTeacher = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3000/classroom/create-teacher", { ...newTeacher, role: "Teacher" }, {
+      await axios.post("https://classroom-mern-5w3y.onrender.com/classroom/create-teacher", { ...newTeacher, role: "Teacher" }, {
         headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
       });
       alert("Teacher has been created")
@@ -86,7 +86,7 @@ const PrincipalView = () => {
   const handleAssignTeacher = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3000/classroom/assign-teacher", { classroomId, teacherId }, {
+      await axios.post("https://classroom-mern-5w3y.onrender.com/classroom/assign-teacher", { classroomId, teacherId }, {
         headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
       });
       fetchClassrooms(); // Refresh the list
@@ -98,7 +98,7 @@ const PrincipalView = () => {
   const handleAssignStudents = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3000/classroom/assign-student", { classroomId, studentIds }, {
+      await axios.post("https://classroom-mern-5w3y.onrender.com/classroom/assign-student", { classroomId, studentIds }, {
         headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
       });
       fetchClassrooms(); // Refresh the list
@@ -110,7 +110,7 @@ const PrincipalView = () => {
     e.preventDefault();
     console.log(`${editingTeacher._id}`);
     try {
-      await axios.put(`http://localhost:3000/classroom/update-teacher/${editingTeacher._id}`, editingTeacher, {
+      await axios.put(`https://classroom-mern-5w3y.onrender.com/classroom/update-teacher/${editingTeacher._id}`, editingTeacher, {
         headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
       });
       fetchTeachers(); 
@@ -121,7 +121,7 @@ const PrincipalView = () => {
   };
   const handleDeleteTeacher = async (teacherId) => {
     try {
-      await axios.delete(`http://localhost:3000/classroom/delete-teacher/${teacherId._id}`, {
+      await axios.delete(`https://classroom-mern-5w3y.onrender.com/classroom/delete-teacher/${teacherId._id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
       });
       fetchTeachers(); // Refresh the list of teachers
