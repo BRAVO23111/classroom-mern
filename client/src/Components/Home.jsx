@@ -3,17 +3,21 @@ import { Link, useNavigate } from 'react-router-dom';
 
 function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('authToken'));
+  const [role, setRole] = useState(localStorage.getItem('role'));
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Update authentication status based on localStorage
     const token = localStorage.getItem('authToken');
+    const userRole = localStorage.getItem('role');
     setIsAuthenticated(!!token);
+    setRole(userRole);
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('role');
     setIsAuthenticated(false);
+    setRole(null);
     navigate('/');
   };
 
@@ -42,6 +46,11 @@ function HomePage() {
         <h2 className="text-3xl text-center">
           {isAuthenticated ? 'Welcome back!' : 'Welcome to the School Management System'}
         </h2>
+        {isAuthenticated && role && (
+          <h3 className="text-xl text-center mt-4">
+            Logged in as: <span className="font-semibold">{role}</span>
+          </h3>
+        )}
         {!isAuthenticated && (
           <h2 className="text-3xl text-center">
             Please login to view content
