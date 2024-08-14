@@ -25,7 +25,7 @@ const PrincipalView = () => {
 
   const fetchTeachers = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/auth/users?role=Teacher", {
+      const response = await axios.get("https://classroom-mern-5w3y.onrender.com/auth/users?role=Teacher", {
         headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
       });
       setTeachers(response.data);
